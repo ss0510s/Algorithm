@@ -10,59 +10,33 @@ public class Main {
 
         int T = Integer.parseInt(st.nextToken());
         int W = Integer.parseInt(st.nextToken());
-        int[] arr = new int[T + 1];
+        int[][] dp = new int[T + 1][W + 1];
 
         for(int i = 1; i <= T; i++) {
-            arr[i] = Integer.parseInt(br.readLine());
-        }
+            int input = Integer.parseInt(br.readLine());
 
-        // 현재 위치, 남은 이동 횟수, 현재 시간
-        int[][][] dp = new int[3][W + 1][T + 1];
-
-        
-
-        for(int i = 0 ; i < 3; i++) {
             for(int j = 0; j <= W; j++) {
-                for(int k = 0; k <= T; k++) {
-                    dp[i][j][k] = -1;
+                // 이동을 하지 않는 경우
+                if(j == 0) {
+                    dp[i][j] = dp[i - 1][j] + (input == 1 ? 1 : 0);
+
+                    continue;
                 }
-            }
-        }
 
-        dp[1][W][0] = 0;
-
-        for(int time = 0; time < T; time++) {
-            for(int cnt = 0; cnt <= W; cnt++) {
-                for(int pos = 1; pos <= 2; pos++) {
-                    if(dp[pos][cnt][time] >= 0) {
-                        int nextPos = arr[time + 1];
-
-                        if(pos == nextPos) {
-                            dp[pos][cnt][time + 1] = dp[pos][cnt][time] + 1;
-                        } else {
-                            if(cnt != 0) {
-                                dp[nextPos][cnt - 1][time + 1] = Math.max(dp[pos][cnt][time] + 1, dp[nextPos][cnt - 1][time + 1]);
-                            }
-                            dp[pos][cnt][time + 1] = dp[pos][cnt][time];
-                        }
-                    }
-
+                if(j % 2 == 0) {
+                    dp[i][j] = Math.max(dp[i - 1][j] + (input == 1 ? 1 : 0), dp[i - 1][j - 1] + (input == 1 ? 0 : 1));
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j] + (input == 2 ? 1 : 0), dp[i - 1][j - 1] + (input == 2 ? 0 : 1));
                 }
+
             }
+
         }
 
         int ans = 0;
 
-        for(int pos = 1; pos <= 2; pos++) {
-            // W 전부 소진
-            for(int time = 1; time <= T; time++) {
-                ans = Math.max(ans, dp[pos][0][time]);
-            }
-
-            // 전부 떨어진 경우
-            for(int i = 0; i <= W; i++) {
-                ans = Math.max(ans, dp[pos][i][T]);
-            }
+        for(int i = 0; i <= W; i++) {
+            ans = Math.max(ans, dp[T][i]);
         }
 
         System.out.println(ans);
