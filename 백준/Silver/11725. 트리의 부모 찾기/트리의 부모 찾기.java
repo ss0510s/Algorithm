@@ -1,10 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
@@ -34,7 +31,8 @@ public class Main {
         }
 
         p[1] = 0;
-        dfs(1);
+//        dfs(1);
+        bfs(1);
 
         StringBuilder sb = new StringBuilder();
         for(int i = 2; i <= N; i++) {
@@ -53,6 +51,25 @@ public class Main {
 
             p[child] = parent;
             dfs(child);
+        }
+    }
+
+    static void bfs(int root) {
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+
+        v[root] = true;
+        q.offer(root);
+
+        while(!q.isEmpty()) {
+            int parent = q.poll();
+
+            for(int child : graph[parent]) {
+                if(v[child]) continue;
+
+                p[child] = parent;
+                v[child] = true;
+                q.offer(child);
+            }
         }
     }
 }
